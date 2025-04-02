@@ -5,7 +5,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { 
@@ -43,5 +43,5 @@ export const routes: Routes = [
     loadComponent: () => import('./features/services/service-form/service-form.component').then(m => m.ServiceFormComponent),
     canActivate: [AuthGuard]
   },
-  { path: '**', redirectTo: '/dashboard' }
+  { path: '**', redirectTo: '/login' }
 ];
