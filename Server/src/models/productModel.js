@@ -30,9 +30,38 @@ class ProductModel {
     return result.rows[0];
   }
 
-  async getAllProducts() {
-    const query = 'SELECT * FROM products';
-    const result = await getPool().query(query);
+  async getAllProducts(queryParams, sortOption) {
+    let query = 'SELECT * FROM products';
+    const values = [];
+    let whereClause = [];
+
+    if (queryParams.$or) {
+      const searchValue = queryParams.$or[0].name.$regex;
+      whereClause.push(`(name ILIKE $${values.length + 1} OR description ILIKE $${values.length + 1})`);
+      values.push(`%${searchValue}%`);
+    }
+
+    if (queryParams.price) {
+      if (queryParams.price.$gte !== undefined) {
+        whereClause.push(`price >= $${values.length + 1}`);
+        values.push(queryParams.price.$gte);
+      }
+      if (queryParams.price.$lte !== undefined) {
+        whereClause.push(`price <= $${values.length + 1}`);
+        values.push(queryParams.price.$lte);
+      }
+    }
+
+    if (whereClause.length > 0) {
+      query += ' WHERE ' + whereClause.join(' AND ');
+    }
+
+    if (Object.keys(sortOption).length > 0) {
+      const [field, order] = Object.entries(sortOption)[0];
+      query += ` ORDER BY ${field} ${order === 1 ? 'ASC' : 'DESC'}`;
+    }
+
+    const result = await getPool().query(query, values);
     return result.rows;
   }
 
