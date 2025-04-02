@@ -1,29 +1,26 @@
 <div class="register-container">
-  <p-card header="Register" [style]="{'width': '360px'}">
-    <form (ngSubmit)="onSubmit()">
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="username">Username</label>
-          <input id="username" type="text" pInputText [(ngModel)]="username" name="username" required>
-        </div>
-        <div class="p-field">
-          <label for="email">Email</label>
-          <input id="email" type="email" pInputText [(ngModel)]="email" name="email" required>
-        </div>
-        <div class="p-field">
-          <label for="password">Password</label>
-          <input id="password" type="password" pInputText [(ngModel)]="password" name="password" required>
-        </div>
-        <button pButton type="submit" label="Register" class="p-button-primary"></button>
-      </div>
-    </form>
-    <p-messages *ngIf="errorMessage" severity="error">
-      <ng-template pTemplate>
-        <span>{{errorMessage}}</span>
-      </ng-template>
-    </p-messages>
-    <div class="p-mt-3 text-center">
-      Already have an account? <a routerLink="/login">Login</a>
+  <h2>Register</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input id="username" type="text" [(ngModel)]="username" name="username" required>
     </div>
-  </p-card>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" [(ngModel)]="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" [(ngModel)]="password" name="password" required>
+    </div>
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Registering...' : 'Register' }}
+    </button>
+  </form>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  <div class="login-link">
+    Already have an account? <a routerLink="/login">Login</a>
+  </div>
 </div>

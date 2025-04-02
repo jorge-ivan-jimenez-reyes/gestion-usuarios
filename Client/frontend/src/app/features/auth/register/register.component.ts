@@ -4,24 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { MessagesModule } from 'primeng/messages';
-import { MessageModule } from 'primeng/message';
-
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
-    InputTextModule,
-    ButtonModule,
-    CardModule,
-    MessagesModule,
-    MessageModule
+    RouterModule
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
@@ -31,10 +20,12 @@ export class RegisterComponent {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
+    this.isLoading = true;
     this.errorMessage = '';
     this.authService.register(this.username, this.email, this.password).subscribe({
       next: () => {
@@ -44,6 +35,10 @@ export class RegisterComponent {
       error: (error) => {
         console.error('Registration error', error);
         this.errorMessage = 'Registration failed. Please try again.';
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
   }
