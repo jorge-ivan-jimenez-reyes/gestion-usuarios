@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Build output
+dist/
+build/
+
+# Angular specific
+/Client/dist
+/Client/tmp
+/Client/out-tsc
+/Client/bazel-out
+/Client/node_modules
+/Client/.angular/cache
+/Client/.sass-cache
+/Client/connect.lock
+/Client/coverage
+/Client/libpeerconnection.log
+/Client/testem.log
+/Client/typings
+
+# Miscellaneous
+*.tmp
+*.bak
+*.cache
+*.pid
+*.seed
+*.pid.lock
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Server specific
+/Server/node_modules
+/Server/dist
+/Server/.env
