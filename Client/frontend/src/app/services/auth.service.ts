@@ -8,6 +8,11 @@ interface LoginResponse {
   // Add any other properties that your backend returns
 }
 
+interface RegisterResponse {
+  message: string;
+  // Add any other properties that your backend returns
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +29,10 @@ export class AuthService {
           localStorage.setItem('token', response.token);
         })
       );
+  }
+
+  register(username: string, email: string, password: string): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, { username, email, password });
   }
 
   logout(): void {
