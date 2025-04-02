@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Service } from '../models/service.model';
 import { ServicesService } from '../services/services.service';
@@ -12,12 +13,13 @@ import { ServicesService } from '../services/services.service';
 @Component({
   selector: 'app-service-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, TableModule, ButtonModule, ConfirmDialogModule, ToastModule],
+  imports: [CommonModule, RouterModule, TableModule, ButtonModule, ConfirmDialogModule, ToastModule, InputTextModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.scss']
 })
 export class ServiceListComponent implements OnInit {
+  @ViewChild('dt') dt: any;
   services: Service[] = [];
 
   constructor(
@@ -50,5 +52,10 @@ export class ServiceListComponent implements OnInit {
         });
       }
     });
+  }
+
+  applyFilterGlobal(event: Event, stringVal: string) {
+    const searchValue = (event.target as HTMLInputElement).value;
+    this.dt.filterGlobal(searchValue, stringVal);
   }
 }
