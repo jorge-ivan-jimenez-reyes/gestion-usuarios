@@ -9,5 +9,20 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'products', component: ProductListComponent, canActivate: [AuthGuard] },
+  {
+    path: 'services',
+    loadComponent: () => import('./features/services/service-list/service-list.component').then(m => m.ServiceListComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'services/create',
+    loadComponent: () => import('./features/services/service-form/service-form.component').then(m => m.ServiceFormComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'services/:id/edit',
+    loadComponent: () => import('./features/services/service-form/service-form.component').then(m => m.ServiceFormComponent),
+    canActivate: [AuthGuard]
+  },
   { path: '**', redirectTo: '/products' }
 ];

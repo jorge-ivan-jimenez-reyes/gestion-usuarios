@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextarea } from 'primeng/inputtextarea';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
@@ -21,11 +21,12 @@ import { ServicesService } from '../services/services.service';
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
-    InputTextareaModule,
+    InputTextarea,
     InputNumberModule,
     DropdownModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    RouterModule
   ],
   providers: [MessageService],
   templateUrl: './service-form.component.html',
@@ -45,7 +46,7 @@ export class ServiceFormComponent implements OnInit {
     private fb: FormBuilder,
     private servicesService: ServicesService,
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     private messageService: MessageService
   ) {
     this.serviceForm = this.fb.group({
