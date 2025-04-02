@@ -47,4 +47,11 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+
+  isAuthenticated(): Observable<boolean> {
+    return new Observable<boolean>(observer => {
+      observer.next(this.isLoggedIn());
+      observer.complete();
+    });
+  }
 }

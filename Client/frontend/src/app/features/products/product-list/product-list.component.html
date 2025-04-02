@@ -1,5 +1,8 @@
 <div class="product-list-container">
-  <h2>Product List</h2>
+  <div class="header">
+    <h2>Product List</h2>
+    <button (click)="logout()" class="logout-button">Logout</button>
+  </div>
   
   <div class="search-filter">
     <input type="text" [(ngModel)]="searchTerm" placeholder="Search products...">
@@ -14,7 +17,15 @@
     </select>
   </div>
 
-  <table class="product-table">
+  <div *ngIf="isLoading" class="loading-indicator">
+    Loading products...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <table *ngIf="!isLoading && !error" class="product-table">
     <thead>
       <tr>
         <th>Name</th>
@@ -38,6 +49,10 @@
       </tr>
     </tbody>
   </table>
+
+  <div *ngIf="!isLoading && !error && products.length === 0" class="no-products-message">
+    No products found.
+  </div>
 
   <button [routerLink]="['/products/create']">Create New Product</button>
 </div>

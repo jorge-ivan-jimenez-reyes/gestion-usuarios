@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Product } from '../models/product.model';
 import { ProductListService } from '../services/product-list.service';
+import { ConfirmationDialogService } from '../../../shared/services/confirmation-dialog.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-product-list',
@@ -21,7 +23,9 @@ export class ProductListComponent implements OnInit {
 
   constructor(
     private productListService: ProductListService,
-    private confirmationDialogService: ConfirmationDialogService
+    private confirmationDialogService: ConfirmationDialogService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -58,7 +62,7 @@ export class ProductListComponent implements OnInit {
 
   deleteProduct(productId: string) {
     this.confirmationDialogService.confirm('Are you sure you want to delete this product?')
-      .subscribe((confirmed) => {
+      .subscribe((confirmed: boolean) => {
         if (confirmed) {
           this.productListService.deleteProduct(productId).subscribe({
             next: () => {
@@ -71,5 +75,10 @@ export class ProductListComponent implements OnInit {
           });
         }
       });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

@@ -37,8 +37,8 @@ export class LoginComponent {
     this.errorMessage = '';
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        // Navigate to home page or dashboard after successful login
-        this.router.navigate(['/']);
+        // Navigate to product list page after successful login
+        this.router.navigate(['/products']);
       },
       error: (error) => {
         console.error('Login error', error);
