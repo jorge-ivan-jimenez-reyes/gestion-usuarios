@@ -9,6 +9,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
 import { MessageService } from 'primeng/api';
 import { Service } from '../models/service.model';
 import { ServicesService } from '../services/services.service';
@@ -26,7 +27,8 @@ import { ServicesService } from '../services/services.service';
     DropdownModule,
     ButtonModule,
     ToastModule,
-    RouterModule
+    RouterModule,
+    CardModule
   ],
   providers: [MessageService],
   templateUrl: './service-form.component.html',
