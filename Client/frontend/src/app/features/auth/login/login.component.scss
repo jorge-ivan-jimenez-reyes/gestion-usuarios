@@ -26,6 +26,11 @@
       padding: 8px;
       border: 1px solid #0056b3;
       border-radius: 4px;
+      &:focus {
+        outline: none;
+        border-color: #003d82;
+        box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
+      }
     }
   }
 
@@ -42,5 +47,17 @@
     &:hover {
       background-color: #003d82;
     }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
+    }
+  }
+
+  .error-message {
+    color: #dc3545;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9em;
   }
 }
