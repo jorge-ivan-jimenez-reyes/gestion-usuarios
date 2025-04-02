@@ -1,81 +1,54 @@
 <div class="product-list-container">
-  <p-toast></p-toast>
-  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+  <h1>Product List</h1>
+  
+  <div class="search-filter">
+    <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search products" aria-label="Search products">
+    <select [(ngModel)]="filterOptions.category" (change)="onFilter()" aria-label="Filter by category">
+      <option value="">All Categories</option>
+      <option *ngFor="let category of categories" [value]="category.value">{{category.label}}</option>
+    </select>
+    <select [(ngModel)]="filterOptions.priceRange" (change)="onFilter()" aria-label="Filter by price range">
+      <option value="">All Price Ranges</option>
+      <option *ngFor="let range of priceRanges" [value]="range.value">{{range.label}}</option>
+    </select>
+  </div>
 
-  <p-card>
-    <ng-template pTemplate="header">
-      <div class="flex justify-content-between align-items-center p-3">
-        <h2>Product List</h2>
-        <p-button (click)="logout()" label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger"></p-button>
-      </div>
-    </ng-template>
+  <div *ngIf="isLoading" class="loading">Loading products...</div>
 
-    <div class="p-fluid grid">
-      <div class="col-12 md:col-4">
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search products" class="w-full" />
-        </span>
-      </div>
-      <div class="col-12 md:col-4">
-        <p-dropdown [options]="categories" [(ngModel)]="filterOptions.category" (onChange)="onFilter()" placeholder="Select Category" [showClear]="true"></p-dropdown>
-      </div>
-      <div class="col-12 md:col-4">
-        <p-dropdown [options]="priceRanges" [(ngModel)]="filterOptions.priceRange" (onChange)="onFilter()" placeholder="Select Price Range" [showClear]="true"></p-dropdown>
-      </div>
-    </div>
-    
-    <p-table
-      #dt
-      [value]="products"
-      dataKey="id"
-      [rows]="rows"
-      [paginator]="true"
-      [loading]="isLoading"
-      [globalFilterFields]="['name', 'description', 'price', 'quantity']"
-      [rowHover]="true"
-      [showCurrentPageReport]="true"
-      [(first)]="first"
-      [totalRecords]="totalRecords"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-      styleClass="p-datatable-gridlines"
-      [tableStyle]="{'min-width': '50rem'}"
-      [lazy]="true"
-      (onLazyLoad)="loadProducts($event)"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-          <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
-          <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
-          <th pSortableColumn="quantity">Quantity <p-sortIcon field="quantity"></p-sortIcon></th>
-          <th>Actions</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-product>
-        <tr>
-          <td>{{ product.name }}</td>
-          <td>{{ product.description }}</td>
-          <td>{{ product.price | currency }}</td>
-          <td>{{ product.quantity }}</td>
-          <td>
-            <p-button icon="pi pi-eye" [routerLink]="['/products', product.id]" styleClass="p-button-rounded p-button-text p-button-info mr-2" pTooltip="View" tooltipPosition="top"></p-button>
-            <p-button icon="pi pi-pencil" [routerLink]="['/products', product.id, 'edit']" styleClass="p-button-rounded p-button-text p-button-success mr-2" pTooltip="Edit" tooltipPosition="top"></p-button>
-            <p-button icon="pi pi-trash" (onClick)="deleteProduct(product)" styleClass="p-button-rounded p-button-text p-button-danger" pTooltip="Delete" tooltipPosition="top"></p-button>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="5" class="text-center">No products found.</td>
-        </tr>
-      </ng-template>
-    </p-table>
+  <table *ngIf="!isLoading && products.length > 0" class="product-table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.price | currency }}</td>
+        <td>{{ product.quantity }}</td>
+        <td>
+          <button [routerLink]="['/products', product.id]" aria-label="View product">View</button>
+          <button [routerLink]="['/products', product.id, 'edit']" aria-label="Edit product">Edit</button>
+          <button (click)="deleteProduct(product)" aria-label="Delete product">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <ng-template pTemplate="footer">
-      <div class="flex justify-content-end mt-3">
-        <p-button label="Create New Product" icon="pi pi-plus" [routerLink]="['/products/create']" styleClass="p-button-success"></p-button>
-      </div>
-    </ng-template>
-  </p-card>
+  <div *ngIf="!isLoading && products.length === 0" class="no-products">
+    No products found.
+  </div>
+
+  <nav *ngIf="!isLoading && totalPages > 1" class="pagination" aria-label="Product list pagination">
+    <button (click)="loadPreviousPage()" [disabled]="currentPage === 1" aria-label="Go to previous page">Previous</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="loadNextPage()" [disabled]="currentPage === totalPages" aria-label="Go to next page">Next</button>
+  </nav>
+
+  <button [routerLink]="['/products/create']" class="create-product-btn">Create New Product</button>
 </div>

@@ -1,53 +1,51 @@
 <div class="service-list-container">
-  <p-toast></p-toast>
-  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
-
-  <div class="card">
-    <h2>Services List</h2>
-
-    <div class="mb-3">
-      <p-button label="Add New Service" icon="pi pi-plus" styleClass="p-button-success" [routerLink]="['/services/create']"></p-button>
-    </div>
-
-    <p-table [value]="services" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" 
-             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} services" [rowsPerPageOptions]="[10,25,50]"
-             [globalFilterFields]="['name','description','category']">
-      <ng-template pTemplate="caption">
-        <div class="flex align-items-center justify-content-between">
-          <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Search..." />
-          </span>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-          <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
-          <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
-          <th pSortableColumn="duration">Duration <p-sortIcon field="duration"></p-sortIcon></th>
-          <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
-          <th>Actions</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-service>
-        <tr>
-          <td>{{service.name}}</td>
-          <td>{{service.description}}</td>
-          <td>{{service.price | currency}}</td>
-          <td>{{service.duration}} minutes</td>
-          <td>{{service.category}}</td>
-          <td>
-            <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2" [routerLink]="['/services', service.id, 'edit']"></p-button>
-            <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger" (onClick)="deleteService(service)"></p-button>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="6">No services found.</td>
-        </tr>
-      </ng-template>
-    </p-table>
+  <h1>Services List</h1>
+  
+  <div class="search-filter">
+    <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search services" aria-label="Search services">
+    <select [(ngModel)]="filterOptions.category" (change)="onFilter()" aria-label="Filter by category">
+      <option value="">All Categories</option>
+      <option *ngFor="let category of categories" [value]="category">{{category}}</option>
+    </select>
   </div>
+
+  <div *ngIf="isLoading" class="loading">Loading services...</div>
+
+  <table *ngIf="!isLoading && services.length > 0" class="service-table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Duration</th>
+        <th scope="col">Category</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let service of services">
+        <td>{{service.name}}</td>
+        <td>{{service.description}}</td>
+        <td>{{service.price | currency}}</td>
+        <td>{{service.duration}} minutes</td>
+        <td>{{service.category}}</td>
+        <td>
+          <button [routerLink]="['/services', service.id, 'edit']" aria-label="Edit service">Edit</button>
+          <button (click)="deleteService(service)" aria-label="Delete service">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && services.length === 0" class="no-services">
+    No services found.
+  </div>
+
+  <nav *ngIf="!isLoading && totalPages > 1" class="pagination" aria-label="Service list pagination">
+    <button (click)="loadPreviousPage()" [disabled]="currentPage === 1" aria-label="Go to previous page">Previous</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="loadNextPage()" [disabled]="currentPage === totalPages" aria-label="Go to next page">Next</button>
+  </nav>
+
+  <button [routerLink]="['/services/create']" class="create-service-btn">Add New Service</button>
 </div>

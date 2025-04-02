@@ -1,151 +1,111 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Product } from '../models/product.model';
-import { ProductListService, ProductListResponse } from '../services/product-list.service';
+import { ProductListService } from '../services/product-list.service';
 import { AuthService } from '../../../services/auth.service';
-
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
-import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
-import { MessageService, ConfirmationService } from 'primeng/api';
-import { Table, TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    CurrencyPipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    TooltipModule,
-    ConfirmDialogModule,
-    ToastModule,
-    CardModule,
-    DropdownModule
-  ],
-  providers: [MessageService, ConfirmationService],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.scss'
+  styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent implements OnInit {
-  @ViewChild('dt') dt: any;
-
   products: Product[] = [];
   isLoading: boolean = false;
   totalRecords: number = 0;
-  rows: number = 10;
-  first: number = 0;
-
+  currentPage: number = 1;
+  totalPages: number = 1;
+  searchTerm: string = '';
   filterOptions = {
-    name: '',
-    category: null,
-    priceRange: null
+    category: '',
+    priceRange: ''
   };
 
-  categories: any[] = [
-    { label: 'All Categories', value: null },
+  readonly ITEMS_PER_PAGE = 10;
+
+  categories: { label: string; value: string }[] = [
+    { label: 'All Categories', value: '' },
     { label: 'Electronics', value: 'electronics' },
     { label: 'Clothing', value: 'clothing' },
     { label: 'Books', value: 'books' }
   ];
 
-  priceRanges: any[] = [
-    { label: 'All Prices', value: null },
-    { label: 'Under $25', value: { min: 0, max: 25 } },
-    { label: '$25 - $50', value: { min: 25, max: 50 } },
-    { label: '$50 - $100', value: { min: 50, max: 100 } },
-    { label: 'Over $100', value: { min: 100, max: null } }
+  priceRanges: { label: string; value: string }[] = [
+    { label: 'All Prices', value: '' },
+    { label: 'Under $25', value: '0-25' },
+    { label: '$25 - $50', value: '25-50' },
+    { label: '$50 - $100', value: '50-100' },
+    { label: 'Over $100', value: '100-' }
   ];
 
   constructor(
     private productListService: ProductListService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
     private authService: AuthService,
     private router: Router
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadProducts();
   }
 
-  loadProducts(event?: TableLazyLoadEvent) {
+  loadProducts(): void {
     this.isLoading = true;
-    const params = this.getParams(event);
-
-    this.productListService.getProducts(params).subscribe({
-      next: (response: ProductListResponse) => {
+    this.productListService.getProducts(this.currentPage, this.searchTerm, this.filterOptions).subscribe({
+      next: (response) => {
         this.products = response.items;
         this.totalRecords = response.totalRecords;
+        this.totalPages = Math.ceil(this.totalRecords / this.ITEMS_PER_PAGE);
         this.isLoading = false;
       },
       error: (error) => {
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'Error fetching products. Please try again.'});
-        this.isLoading = false;
         console.error('Error fetching products', error);
+        this.isLoading = false;
       }
     });
   }
 
-  getParams(event?: TableLazyLoadEvent) {
-    const first = event?.first ?? 0;
-    const rows = event?.rows ?? this.rows;
-    let params: any = {
-      ...this.filterOptions,
-      page: Math.floor(first / rows) + 1,
-      pageSize: rows
-    };
-
-    if (event?.sortField) {
-      params.sortField = event.sortField;
-      params.sortOrder = event.sortOrder === 1 ? 'asc' : 'desc';
-    }
-
-    return params;
-  }
-
-  onGlobalFilter(table: any, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
-
-  deleteProduct(product: Product) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this product?',
-      header: 'Confirm',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.productListService.deleteProduct(product.id).subscribe({
-          next: () => {
-            this.loadProducts();
-            this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});
-          },
-          error: (error) => {
-            this.messageService.add({severity:'error', summary: 'Error', detail: 'Error deleting product. Please try again.'});
-            console.error('Error deleting product', error);
-          }
-        });
-      }
-    });
-  }
-
-  onFilter() {
-    this.first = 0;
+  onSearch(): void {
+    this.resetPagination();
     this.loadProducts();
   }
 
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  onFilter(): void {
+    this.resetPagination();
+    this.loadProducts();
+  }
+
+  deleteProduct(product: Product): void {
+    if (confirm(`Are you sure you want to delete ${product.name}?`)) {
+      this.productListService.deleteProduct(product.id).subscribe({
+        next: () => {
+          this.loadProducts();
+        },
+        error: (error) => {
+          console.error('Error deleting product', error);
+        }
+      });
+    }
+  }
+
+  loadPreviousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadProducts();
+    }
+  }
+
+  loadNextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadProducts();
+    }
+  }
+
+  private resetPagination(): void {
+    this.currentPage = 1;
   }
 }

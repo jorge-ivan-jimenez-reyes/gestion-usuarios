@@ -14,7 +14,12 @@ export interface ProductListResponse {
 export class ProductListService {
   constructor(private productService: ProductService) {}
 
-  getProducts(params: any): Observable<ProductListResponse> {
+  getProducts(page: number, searchTerm: string, filterOptions: any): Observable<ProductListResponse> {
+    const params = {
+      page,
+      searchTerm,
+      ...filterOptions
+    };
     return this.productService.getProducts(params).pipe(
       map(response => ({
         items: response,

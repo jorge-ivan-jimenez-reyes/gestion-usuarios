@@ -1,18 +1,28 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Service } from '../models/service.model';
+
+export interface ServiceListResponse {
+  items: Service[];
+  totalRecords: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServicesService {
-  private apiUrl = 'http://localhost:3000/api/services'; // Adjust this URL as needed
+  private apiUrl = 'http://localhost:3000/api/services';
 
   constructor(private http: HttpClient) { }
 
-  getServices(): Observable<Service[]> {
-    return this.http.get<Service[]>(this.apiUrl);
+  getServices(page: number, searchTerm: string, category: string): Observable<ServiceListResponse> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('searchTerm', searchTerm)
+      .set('category', category);
+
+    return this.http.get<ServiceListResponse>(this.apiUrl, { params });
   }
 
   getService(id: string): Observable<Service> {
