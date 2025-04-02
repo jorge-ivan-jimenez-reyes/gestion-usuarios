@@ -1,7 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
+import { AuthService } from '../../services/auth.service';
 
 Chart.register(...registerables);
 
@@ -16,13 +17,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('barChart') barChart!: ElementRef;
   @ViewChild('lineChart') lineChart!: ElementRef;
 
-  constructor() {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {}
 
   ngAfterViewInit() {
     this.createBarChart();
     this.createLineChart();
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   createBarChart() {

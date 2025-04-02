@@ -27,10 +27,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let product of products">
-        <td>{{ product.name }}</td>
-        <td>{{ product.description }}</td>
-        <td>{{ product.price | currency }}</td>
-        <td>{{ product.quantity }}</td>
+        <td>{{product.name}}</td>
+        <td>{{product.description}}</td>
+        <td>{{product.price | currency}}</td>
+        <td>{{product.quantity}}</td>
         <td>
           <button [routerLink]="['/products', product.id]" aria-label="View product">View</button>
           <button [routerLink]="['/products', product.id, 'edit']" aria-label="Edit product">Edit</button>
@@ -50,5 +50,11 @@
     <button (click)="loadNextPage()" [disabled]="currentPage === totalPages" aria-label="Go to next page">Next</button>
   </nav>
 
-  <button [routerLink]="['/products/create']" class="create-product-btn">Create New Product</button>
+  <div class="action-buttons">
+    <button [routerLink]="['/products/create']" class="create-product-btn">Create New Product</button>
+    <div class="bulk-insert">
+      <label for="bulk-insert-file">Bulk Insert Products:</label>
+      <input type="file" id="bulk-insert-file" (change)="bulkInsertProducts($event)" accept=".csv,.xlsx,.xls">
+    </div>
+  </div>
 </div>

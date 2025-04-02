@@ -3,6 +3,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { ProfileComponent } from './features/auth/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -11,6 +12,11 @@ export const routes: Routes = [
   { 
     path: 'dashboard', 
     component: DashboardComponent,
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: 'profile', 
+    component: ProfileComponent,
     canActivate: [AuthGuard]
   },
   { 

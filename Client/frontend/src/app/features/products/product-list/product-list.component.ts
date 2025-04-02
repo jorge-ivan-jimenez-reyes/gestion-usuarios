@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Product } from '../models/product.model';
-import { ProductListService } from '../services/product-list.service';
+import { ProductService } from '../../../services/product.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -43,7 +43,7 @@ export class ProductListComponent implements OnInit {
   ];
 
   constructor(
-    private productListService: ProductListService,
+    private productService: ProductService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -54,8 +54,13 @@ export class ProductListComponent implements OnInit {
 
   loadProducts(): void {
     this.isLoading = true;
-    this.productListService.getProducts(this.currentPage, this.searchTerm, this.filterOptions).subscribe({
-      next: (response) => {
+    const params = {
+      page: this.currentPage,
+      searchTerm: this.searchTerm,
+      ...this.filterOptions
+    };
+    this.productService.getProducts(params).subscribe({
+      next: (response: any) => {
         this.products = response.items;
         this.totalRecords = response.totalRecords;
         this.totalPages = Math.ceil(this.totalRecords / this.ITEMS_PER_PAGE);
@@ -80,7 +85,7 @@ export class ProductListComponent implements OnInit {
 
   deleteProduct(product: Product): void {
     if (confirm(`Are you sure you want to delete ${product.name}?`)) {
-      this.productListService.deleteProduct(product.id).subscribe({
+      this.productService.deleteProduct(product.id).subscribe({
         next: () => {
           this.loadProducts();
         },
@@ -107,5 +112,20 @@ export class ProductListComponent implements OnInit {
 
   private resetPagination(): void {
     this.currentPage = 1;
+  }
+
+  bulkInsertProducts(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.productService.bulkInsertProducts(file).subscribe({
+        next: (response) => {
+          console.log('Bulk insert successful', response);
+          this.loadProducts();
+        },
+        error: (error) => {
+          console.error('Error during bulk insert', error);
+        }
+      });
+    }
   }
 }

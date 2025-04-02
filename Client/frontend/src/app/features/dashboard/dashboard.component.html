@@ -1,3 +1,13 @@
+<nav class="dashboard-nav">
+  <ul>
+    <li><a [routerLink]="['/dashboard']" routerLinkActive="active">Dashboard</a></li>
+    <li><a [routerLink]="['/products']" routerLinkActive="active">Products</a></li>
+    <li><a [routerLink]="['/services']" routerLinkActive="active">Services</a></li>
+    <li><a [routerLink]="['/profile']" routerLinkActive="active">Profile</a></li>
+    <li><a (click)="logout()">Logout</a></li>
+  </ul>
+</nav>
+
 <div class="dashboard-container">
   <h1>Welcome to Your Dashboard</h1>
   
@@ -13,6 +23,11 @@
         <h3>Services</h3>
         <p>Manage your service offerings</p>
         <button [routerLink]="['/services']">Go to Services</button>
+      </div>
+      <div class="card">
+        <h3>Profile</h3>
+        <p>Update your user profile</p>
+        <button [routerLink]="['/profile']">Go to Profile</button>
       </div>
     </div>
   </div>

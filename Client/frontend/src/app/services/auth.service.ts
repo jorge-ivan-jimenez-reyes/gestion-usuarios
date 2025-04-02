@@ -5,11 +5,17 @@ import { tap, map } from 'rxjs/operators';
 
 interface LoginResponse {
   token: string;
-  expiresIn: number; // Add this field to store token expiration time
+  expiresIn: number;
 }
 
 interface RegisterResponse {
   message: string;
+}
+
+interface UserProfile {
+  username: string;
+  email: string;
+  // Add any other profile fields here
 }
 
 @Injectable({
@@ -32,6 +38,10 @@ export class AuthService {
 
   register(username: string, email: string, password: string): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, { username, email, password });
+  }
+
+  updateProfile(profile: UserProfile): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/profile`, profile);
   }
 
   logout(): void {
