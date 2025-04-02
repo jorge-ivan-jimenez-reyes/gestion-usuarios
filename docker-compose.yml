@@ -1,0 +1,38 @@
+services:
+  server:
+    build: ./Server
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./Server:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - db
+
+  frontend:
+    build: ./Client/frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - server
+
+  python_client:
+    build: ./Client
+    volumes:
+      - ./Client:/usr/src/app
+    depends_on:
+      - server
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: gestion_usuarios
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
