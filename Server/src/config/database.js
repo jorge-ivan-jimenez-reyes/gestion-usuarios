@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const logger = require('./logger');
 
 class Database {
   constructor() {
@@ -13,10 +14,11 @@ class Database {
 
   async connect() {
     try {
+      logger.info('Attempting to connect to the database...');
       await this.pool.query('SELECT NOW()');
-      console.log('Connected to the database');
+      logger.info('Successfully connected to the database');
     } catch (error) {
-      console.error('Error connecting to the database:', error);
+      logger.error('Error connecting to the database:', error);
       throw error;
     }
   }
