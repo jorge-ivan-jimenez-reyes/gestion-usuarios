@@ -18,8 +18,29 @@ class ProductService {
     return await productModel.deleteProduct(id);
   }
 
-  async getAllProducts() {
-    return await productModel.getAllProducts();
+  async getAllProducts({ search, minPrice, maxPrice, sort }) {
+    let query = {};
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      query.price = {};
+      if (minPrice !== undefined) query.price.$gte = parseFloat(minPrice);
+      if (maxPrice !== undefined) query.price.$lte = parseFloat(maxPrice);
+    }
+
+    let sortOption = {};
+    if (sort) {
+      const [field, order] = sort.split('_');
+      sortOption[field] = order === 'asc' ? 1 : -1;
+    }
+
+    return await productModel.getAllProducts(query, sortOption);
   }
 
   async bulkInsertProductsFromExcel(file) {
