@@ -11,7 +11,11 @@
 
   <div *ngIf="isLoading" class="loading">Loading services...</div>
 
-  <table *ngIf="!isLoading && services.length > 0" class="service-table">
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <table *ngIf="!isLoading && !error && services.length > 0" class="service-table">
     <thead>
       <tr>
         <th scope="col">Name</th>
@@ -37,11 +41,11 @@
     </tbody>
   </table>
 
-  <div *ngIf="!isLoading && services.length === 0" class="no-services">
+  <div *ngIf="!isLoading && !error && services.length === 0" class="no-services">
     No services found.
   </div>
 
-  <nav *ngIf="!isLoading && totalPages > 1" class="pagination" aria-label="Service list pagination">
+  <nav *ngIf="!isLoading && !error && totalPages > 1" class="pagination" aria-label="Service list pagination">
     <button (click)="loadPreviousPage()" [disabled]="currentPage === 1" aria-label="Go to previous page">Previous</button>
     <span>Page {{ currentPage }} of {{ totalPages }}</span>
     <button (click)="loadNextPage()" [disabled]="currentPage === totalPages" aria-label="Go to next page">Next</button>

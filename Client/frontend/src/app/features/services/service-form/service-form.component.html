@@ -1,48 +1,57 @@
 <div class="service-form-container">
-  <p-card [header]="isEditMode ? 'Edit Service' : 'Create Service'">
-    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="name">Name</label>
-          <input id="name" type="text" pInputText formControlName="name" />
-          <small *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched" class="p-error">
-            Name is required and must be at least 3 characters long.
-          </small>
-        </div>
-        <div class="p-field">
-          <label for="description">Description</label>
-          <textarea id="description" pInputTextarea formControlName="description" rows="3"></textarea>
-          <small *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched" class="p-error">
-            Description is required and must be at least 10 characters long.
-          </small>
-        </div>
-        <div class="p-field">
-          <label for="price">Price</label>
-          <p-inputNumber id="price" formControlName="price" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
-          <small *ngIf="serviceForm.get('price')?.invalid && serviceForm.get('price')?.touched" class="p-error">
-            Price is required and must be a positive number.
-          </small>
-        </div>
-        <div class="p-field">
-          <label for="duration">Duration (minutes)</label>
-          <p-inputNumber id="duration" formControlName="duration"></p-inputNumber>
-          <small *ngIf="serviceForm.get('duration')?.invalid && serviceForm.get('duration')?.touched" class="p-error">
-            Duration is required and must be at least 1 minute.
-          </small>
-        </div>
-        <div class="p-field">
-          <label for="category">Category</label>
-          <p-dropdown id="category" [options]="categories" formControlName="category" optionLabel="label" optionValue="value"></p-dropdown>
-          <small *ngIf="serviceForm.get('category')?.invalid && serviceForm.get('category')?.touched" class="p-error">
-            Category is required.
-          </small>
-        </div>
-      </div>
-      <div class="p-d-flex p-jc-between p-mt-4">
-        <p-button type="button" label="Cancel" (onClick)="router.navigate(['/services'])" styleClass="p-button-secondary"></p-button>
-        <p-button type="submit" [label]="isEditMode ? 'Update' : 'Create'" [disabled]="!serviceForm.valid || isLoading"></p-button>
-      </div>
-    </form>
-  </p-card>
+  <h2>{{ isEditMode ? 'Edit Service' : 'Create Service' }}</h2>
+  
+  <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" formControlName="name" placeholder="Enter service name">
+      <small *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched" class="error-message">
+        Name is required and must be at least 3 characters long.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category">
+        <option value="">Select a category</option>
+        <option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</option>
+      </select>
+      <small *ngIf="serviceForm.get('category')?.invalid && serviceForm.get('category')?.touched" class="error-message">
+        Category is required.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" rows="3" placeholder="Provide a detailed description of the service"></textarea>
+      <small *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched" class="error-message">
+        Description is required and must be at least 10 characters long.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="number" id="price" formControlName="price" placeholder="Enter price" min="0" step="0.01">
+      <small *ngIf="serviceForm.get('price')?.invalid && serviceForm.get('price')?.touched" class="error-message">
+        Price is required and must be a positive number.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="duration">Duration (minutes)</label>
+      <input type="number" id="duration" formControlName="duration" placeholder="Enter duration" min="1">
+      <small *ngIf="serviceForm.get('duration')?.invalid && serviceForm.get('duration')?.touched" class="error-message">
+        Duration is required and must be at least 1 minute.
+      </small>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="router.navigate(['/services'])" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="!serviceForm.valid || isLoading" class="btn-primary">
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>
-<p-toast></p-toast>
