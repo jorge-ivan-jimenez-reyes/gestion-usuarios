@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
@@ -10,31 +12,37 @@ import { AuthService } from '../../../services/auth.service';
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  errorMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   onSubmit() {
-    this.errorMessage = '';
+    this.isLoading = true;
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        console.log('Login successful');
-        this.router.navigate(['/dashboard']);
+        this.messageService.add({severity:'success', summary: 'Success', detail: 'Login successful'});
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 1500);
       },
       error: (error) => {
         console.error('Login error', error);
-        this.errorMessage = 'Invalid email or password';
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'Invalid email or password'});
+        this.isLoading = false;
       }
     });
   }
