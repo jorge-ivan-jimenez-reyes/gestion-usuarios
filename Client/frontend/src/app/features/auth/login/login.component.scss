@@ -61,6 +61,21 @@
       .p-messages {
         margin-top: 1rem;
       }
+
+      .text-center {
+        text-align: center;
+        margin-top: 1rem;
+
+        a {
+          color: #1A4C7B;
+          text-decoration: none;
+          font-weight: bold;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
     }
   }
 }
