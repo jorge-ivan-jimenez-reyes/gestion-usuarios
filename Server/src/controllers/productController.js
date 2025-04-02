@@ -80,7 +80,13 @@ class ProductController {
       }
 
       const { search, minPrice, maxPrice, sort } = req.query;
-      const products = await productService.getAllProducts({ search, minPrice, maxPrice, sort });
+      const queryParams = {
+        search,
+        minPrice: minPrice ? parseFloat(minPrice) : undefined,
+        maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+        sort
+      };
+      const products = await productService.getAllProducts(queryParams);
       res.json(products);
     } catch (error) {
       res.status(400).json({ error: error.message });

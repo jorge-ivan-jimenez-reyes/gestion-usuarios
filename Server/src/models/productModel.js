@@ -33,9 +33,9 @@ class ProductModel {
   async getAllProducts(queryParams, sortOption) {
     let query = 'SELECT * FROM products';
     const values = [];
-    let whereClause = [];
+    const whereClause = [];
 
-    if (queryParams.$or) {
+    if (queryParams.$or && queryParams.$or.length > 0) {
       const searchValue = queryParams.$or[0].name.$regex;
       whereClause.push(`(name ILIKE $${values.length + 1} OR description ILIKE $${values.length + 1})`);
       values.push(`%${searchValue}%`);

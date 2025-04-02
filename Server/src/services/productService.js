@@ -19,28 +19,28 @@ class ProductService {
   }
 
   async getAllProducts({ search, minPrice, maxPrice, sort }) {
-    let query = {};
+    let queryParams = {};
+    let sortOption = {};
 
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+      queryParams.$or = [
+        { name: { $regex: search } },
+        { description: { $regex: search } }
       ];
     }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
-      query.price = {};
-      if (minPrice !== undefined) query.price.$gte = parseFloat(minPrice);
-      if (maxPrice !== undefined) query.price.$lte = parseFloat(maxPrice);
+      queryParams.price = {};
+      if (minPrice !== undefined) queryParams.price.$gte = parseFloat(minPrice);
+      if (maxPrice !== undefined) queryParams.price.$lte = parseFloat(maxPrice);
     }
 
-    let sortOption = {};
     if (sort) {
       const [field, order] = sort.split('_');
       sortOption[field] = order === 'asc' ? 1 : -1;
     }
 
-    return await productModel.getAllProducts(query, sortOption);
+    return await productModel.getAllProducts(queryParams, sortOption);
   }
 
   async bulkInsertProductsFromExcel(file) {
