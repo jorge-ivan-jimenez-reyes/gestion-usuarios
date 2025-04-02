@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ProductService } from '../../../services/product.service';
 import { Product } from '../models/product.model';
+
+export interface ProductListResponse {
+  items: Product[];
+  totalRecords: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +14,13 @@ import { Product } from '../models/product.model';
 export class ProductListService {
   constructor(private productService: ProductService) {}
 
-  getProducts(params: any): Observable<Product[]> {
-    return this.productService.getProducts(params);
+  getProducts(params: any): Observable<ProductListResponse> {
+    return this.productService.getProducts(params).pipe(
+      map(response => ({
+        items: response,
+        totalRecords: response.length // Assuming the backend doesn't provide a total count
+      }))
+    );
   }
 
   deleteProduct(productId: string): Observable<void> {

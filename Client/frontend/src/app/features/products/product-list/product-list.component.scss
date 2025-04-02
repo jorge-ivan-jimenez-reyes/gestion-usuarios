@@ -1,102 +1,178 @@
-.product-list-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-
-    h2 {
-      margin: 0;
-    }
-
-    .logout-button {
-      padding: 8px 16px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #d32f2f;
-      }
-    }
-  }
-
-  .search-filter {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-
-    input, select {
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    button {
-      padding: 5px 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #0056b3;
-      }
-    }
-  }
-
-  .product-table {
+:host ::ng-deep {
+  .viaje-list-container {
+    background-color: var(--color-surface);
     width: 100%;
-    border-collapse: collapse;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+  }
 
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: left;
+  .p-datatable {
+    color: var(--color-text-primary);
+    font-size: 1rem;
+
+    .p-datatable-header {
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
+      padding: 1rem;
+      border-bottom: 1px solid var(--color-border-light);
+      font-weight: 600;
+      font-size: 1.2rem;
     }
 
-    th {
-      background-color: #f8f9fa;
-      font-weight: bold;
+    .p-datatable-thead > tr > th {
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
+      border-color: var(--color-border-light);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
     }
 
-    button {
-      margin-right: 5px;
-      padding: 5px 10px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    .p-datatable-tbody > tr {
+      background-color: var(--color-surface);
+      transition: background-color 0.2s;
 
-      &:hover {
-        background-color: #218838;
+      > td {
+        border-color: var(--color-border-light);
+        color: var(--color-text-primary);
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
       }
 
-      &:last-child {
-        background-color: #dc3545;
+      &:hover {
+        background-color: var(--color-surface-light);
+      }
+
+      &:nth-child(even) {
+        background-color: var(--color-background);
 
         &:hover {
-          background-color: #c82333;
+          background-color: var(--color-surface-light);
         }
       }
     }
+
+    .p-column-filter {
+      background-color: var(--color-surface);
+
+      .p-inputtext,
+      .p-dropdown,
+      .p-multiselect {
+        background-color: var(--color-surface);
+        color: var(--color-text-primary);
+        border-color: var(--color-border-light);
+        font-size: 1rem;
+      }
+    }
   }
 
-  .loading-indicator, .error-message, .no-products-message {
-    text-align: center;
-    padding: 20px;
-    font-style: italic;
+  .p-inputtext,
+  .p-dropdown,
+  .p-button {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:hover, &:focus {
+      border-color: var(--color-primary-light);
+      outline: none;
+    }
   }
 
-  .error-message {
-    color: #dc3545;
+  .p-button {
+    font-weight: 500;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-surface);
+
+    &:hover {
+      background-color: var(--color-primary-light);
+      border-color: var(--color-primary-light);
+    }
+
+    &.p-button-sm {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.75rem;
+    }
+
+    &.p-button-text {
+      background-color: transparent;
+      border: none;
+      color: var(--color-primary);
+
+      &:hover {
+        background-color: var(--color-muted);
+      }
+
+      &.p-button-success {
+        color: var(--color-primary);
+      }
+
+      &.p-button-danger {
+        color: var(--color-text-secondary);
+      }
+    }
+  }
+
+  .p-tag {
+    padding: 0.25rem 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 4px;
+  }
+
+  // Custom styles for p-tag severities
+  .p-tag {
+    font-weight: 500;
+    
+    &.p-tag-success {
+      background-color: var(--color-success);
+      color: var(--color-surface);
+    }
+    
+    &.p-tag-info {
+      background-color: var(--color-primary);
+      color: var(--color-surface);
+    }
+    
+    &.p-tag-warning {
+      background-color: var(--color-warning);
+      color: var(--color-text-primary);
+    }
+    
+    &.p-tag-danger {
+      background-color: var(--color-error);
+      color: var(--color-surface);
+    }
+  }
+
+  // Show a minimalist paginator
+  .p-paginator {
+    background-color: var(--color-surface);
+    border: none;
+    padding: 1rem 0;
+
+    .p-paginator-element {
+      color: var(--color-text-primary);
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      margin: 0 0.2rem;
+      transition: background-color 0.2s, border-color 0.2s;
+
+      &:hover {
+        background-color: var(--color-muted);
+        border-color: var(--color-primary-light);
+      }
+
+      &.p-highlight {
+        background-color: var(--color-primary);
+        color: var(--color-surface);
+        border-color: var(--color-primary);
+      }
+    }
   }
 }
