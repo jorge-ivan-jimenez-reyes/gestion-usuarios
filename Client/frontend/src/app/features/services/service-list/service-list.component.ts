@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Service } from '../models/service.model';
-import { ServicesService, ServiceListResponse } from '../services/services.service';
+import { ServicesService } from '../services/services.service';
 
 @Component({
   selector: 'app-service-list',
@@ -38,11 +38,17 @@ export class ServiceListComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     this.servicesService.getServices(this.currentPage, this.searchTerm, this.filterOptions.category).subscribe({
-      next: (response: ServiceListResponse) => {
-        this.services = response.items || [];
-        this.totalRecords = response.totalRecords || 0;
+      next: (response: Service[]) => {
+        console.log('Received service data:', response);
+        this.services = response || [];
+        this.totalRecords = this.services.length;
         this.totalPages = Math.ceil(this.totalRecords / this.ITEMS_PER_PAGE);
         this.isLoading = false;
+        console.log('Processed service data:', {
+          services: this.services,
+          totalRecords: this.totalRecords,
+          totalPages: this.totalPages
+        });
       },
       error: (error) => {
         console.error('Error fetching services', error);

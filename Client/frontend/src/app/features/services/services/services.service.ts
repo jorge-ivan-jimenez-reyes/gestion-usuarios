@@ -3,11 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Service } from '../models/service.model';
 
-export interface ServiceListResponse {
-  items: Service[];
-  totalRecords: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -16,13 +11,13 @@ export class ServicesService {
 
   constructor(private http: HttpClient) { }
 
-  getServices(page: number, searchTerm: string, category: string): Observable<ServiceListResponse> {
+  getServices(page: number, searchTerm: string, category: string): Observable<Service[]> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('searchTerm', searchTerm)
       .set('category', category);
 
-    return this.http.get<ServiceListResponse>(this.apiUrl, { params });
+    return this.http.get<Service[]>(this.apiUrl, { params });
   }
 
   getService(id: string): Observable<Service> {
