@@ -12,7 +12,7 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  username: string = '';
+  email: string = '';
   password: string = '';
   errorMessage: string = '';
 
@@ -20,7 +20,7 @@ export class LoginComponent {
 
   onSubmit() {
     this.errorMessage = '';
-    this.authService.login(this.username, this.password).subscribe({
+    this.authService.login(this.email, this.password).subscribe({
       next: () => {
         // Navigate to home page or dashboard after successful login
         this.router.navigate(['/']);

@@ -12,12 +12,12 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api'; // Adjust this to match your backend URL
+  private apiUrl = 'http://localhost:3000/api/users'; // Adjust this to match your backend URL
 
   constructor(private http: HttpClient) { }
 
-  login(username: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { username, password })
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap(response => {
           // Store the token in localStorage
