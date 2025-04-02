@@ -1,25 +1,22 @@
 <div class="login-container">
-  <p-card header="Login" [style]="{'width': '360px', 'margin': '0 auto', 'margin-top': '50px'}">
+  <div class="login-card">
+    <h2>Login</h2>
     <form (ngSubmit)="onSubmit()">
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="email">Email</label>
-          <input id="email" type="email" pInputText [(ngModel)]="email" name="email" required>
-        </div>
-        <div class="p-field">
-          <label for="password">Password</label>
-          <input id="password" type="password" pInputText [(ngModel)]="password" name="password" required>
-        </div>
-        <button pButton type="submit" label="Login" class="p-button-primary p-mt-3"></button>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email" required>
       </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" [(ngModel)]="password" name="password" required>
+      </div>
+      <button type="submit">Login</button>
     </form>
-    <p-messages *ngIf="errorMessage" severity="error" [style]="{'margin-top': '20px'}">
-      <ng-template pTemplate>
-        <span>{{errorMessage}}</span>
-      </ng-template>
-    </p-messages>
-    <div class="p-mt-3 text-center">
+    <div *ngIf="errorMessage" class="error-message">
+      {{errorMessage}}
+    </div>
+    <div class="register-link">
       Don't have an account? <a routerLink="/register">Register</a>
     </div>
-  </p-card>
+  </div>
 </div>
