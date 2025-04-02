@@ -1,5 +1,5 @@
 <div class="login-container">
-  <p-card header="Login" [style]="{'width': '360px'}">
+  <p-card header="Login" [style]="{'width': '360px', 'margin': '0 auto', 'margin-top': '50px'}">
     <form (ngSubmit)="onSubmit()">
       <div class="p-fluid">
         <div class="p-field">
@@ -10,10 +10,10 @@
           <label for="password">Password</label>
           <input id="password" type="password" pInputText [(ngModel)]="password" name="password" required>
         </div>
-        <button pButton type="submit" label="Login" class="p-button-primary"></button>
+        <button pButton type="submit" label="Login" class="p-button-primary p-mt-3"></button>
       </div>
     </form>
-    <p-messages *ngIf="errorMessage" severity="error">
+    <p-messages *ngIf="errorMessage" severity="error" [style]="{'margin-top': '20px'}">
       <ng-template pTemplate>
         <span>{{errorMessage}}</span>
       </ng-template>

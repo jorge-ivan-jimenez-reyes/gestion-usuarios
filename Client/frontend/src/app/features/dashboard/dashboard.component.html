@@ -1,0 +1,27 @@
+<div class="dashboard-container">
+  <h1>Welcome to the Dashboard</h1>
+  
+  <div class="card-container">
+    <p-card header="Products" [style]="{'width': '300px', 'margin-bottom': '2em'}">
+      <p>Manage your product inventory</p>
+      <ng-template pTemplate="footer">
+        <p-button label="Go to Products" icon="pi pi-box" [routerLink]="['/products']"></p-button>
+      </ng-template>
+    </p-card>
+    <p-card header="Services" [style]="{'width': '300px', 'margin-bottom': '2em'}">
+      <p>Manage your service offerings</p>
+      <ng-template pTemplate="footer">
+        <p-button label="Go to Services" icon="pi pi-cog" [routerLink]="['/services']"></p-button>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="chart-container">
+    <p-card header="Product Sales">
+      <p-chart type="line" [data]="productData"></p-chart>
+    </p-card>
+    <p-card header="Service Revenue">
+      <p-chart type="line" [data]="serviceData"></p-chart>
+    </p-card>
+  </div>
+</div>

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
-import { ProductListComponent } from './features/products/product-list/product-list.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -21,6 +20,16 @@ export const routes: Routes = [
   {
     path: 'services',
     loadComponent: () => import('./features/services/service-list/service-list.component').then(m => m.ServiceListComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'products/create',
+    loadComponent: () => import('./features/products/create-product/create-product.component').then(m => m.CreateProductComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'products/:id/edit',
+    loadComponent: () => import('./features/products/create-product/create-product.component').then(m => m.CreateProductComponent),
     canActivate: [AuthGuard]
   },
   {

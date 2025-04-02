@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ import { MessageModule } from 'primeng/message';
     MessagesModule,
     MessageModule
   ],
+  providers: [MessageService],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -31,18 +33,23 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private messageService: MessageService
+  ) {}
 
   onSubmit() {
     this.errorMessage = '';
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        // Navigate to dashboard after successful login
+        this.messageService.add({severity:'success', summary:'Success', detail:'Login successful'});
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Login error', error);
         this.errorMessage = 'Invalid email or password';
+        this.messageService.add({severity:'error', summary:'Error', detail:this.errorMessage});
       }
     });
   }
