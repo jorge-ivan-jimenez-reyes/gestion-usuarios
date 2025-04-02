@@ -1,1 +1,43 @@
-<p>product-list works!</p>
+<div class="product-list-container">
+  <h2>Product List</h2>
+  
+  <div class="search-filter">
+    <input type="text" [(ngModel)]="searchTerm" placeholder="Search products...">
+    <button (click)="onSearch()">Search</button>
+    
+    <!-- Add more filter options as needed -->
+    <select [(ngModel)]="filterOptions.category" (change)="onFilter()">
+      <option value="">All Categories</option>
+      <option value="electronics">Electronics</option>
+      <option value="clothing">Clothing</option>
+      <option value="books">Books</option>
+    </select>
+  </div>
+
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.price | currency }}</td>
+        <td>{{ product.quantity }}</td>
+        <td>
+          <button [routerLink]="['/products', product.id]">View</button>
+          <button [routerLink]="['/products', product.id, 'edit']">Edit</button>
+          <button (click)="deleteProduct(product.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button [routerLink]="['/products/create']">Create New Product</button>
+</div>
