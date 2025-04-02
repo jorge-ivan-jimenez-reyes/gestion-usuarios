@@ -15,6 +15,7 @@ import { ServicesService, ServiceListResponse } from '../services/services.servi
 export class ServiceListComponent implements OnInit {
   services: Service[] = [];
   isLoading: boolean = false;
+  error: string | null = null;
   totalRecords: number = 0;
   currentPage: number = 1;
   totalPages: number = 1;
@@ -35,16 +36,21 @@ export class ServiceListComponent implements OnInit {
 
   loadServices(): void {
     this.isLoading = true;
+    this.error = null;
     this.servicesService.getServices(this.currentPage, this.searchTerm, this.filterOptions.category).subscribe({
       next: (response: ServiceListResponse) => {
-        this.services = response.items;
-        this.totalRecords = response.totalRecords;
+        this.services = response.items || [];
+        this.totalRecords = response.totalRecords || 0;
         this.totalPages = Math.ceil(this.totalRecords / this.ITEMS_PER_PAGE);
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching services', error);
+        this.error = 'Failed to load services. Please try again later.';
         this.isLoading = false;
+        this.services = [];
+        this.totalRecords = 0;
+        this.totalPages = 1;
       }
     });
   }
@@ -67,6 +73,7 @@ export class ServiceListComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting service', error);
+          this.error = 'Failed to delete service. Please try again later.';
         }
       });
     }

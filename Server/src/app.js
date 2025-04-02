@@ -5,6 +5,7 @@ const swaggerSpecs = require('./config/swagger');
 const { validationResult } = require('express-validator');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
 
 class App {
   constructor() {
@@ -23,6 +24,7 @@ class App {
   setupRoutes() {
     this.app.use('/api/users', userRoutes);
     this.app.use('/api/products', productRoutes);
+    this.app.use('/api/services', serviceRoutes);
   }
 
   setupSwagger() {
