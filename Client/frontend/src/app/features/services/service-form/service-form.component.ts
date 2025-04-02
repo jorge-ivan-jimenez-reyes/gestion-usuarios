@@ -35,6 +35,7 @@ import { ServicesService } from '../services/services.service';
 export class ServiceFormComponent implements OnInit {
   serviceForm: FormGroup;
   isEditMode = false;
+  isLoading = false;
   categories: any[] = [
     { label: 'Cleaning', value: 'cleaning' },
     { label: 'Maintenance', value: 'maintenance' },
@@ -50,10 +51,10 @@ export class ServiceFormComponent implements OnInit {
     private messageService: MessageService
   ) {
     this.serviceForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required, Validators.minLength(10)]],
       price: [0, [Validators.required, Validators.min(0)]],
-      duration: [0, [Validators.required, Validators.min(0)]],
+      duration: [0, [Validators.required, Validators.min(1)]],
       category: ['', Validators.required]
     });
   }
@@ -67,14 +68,22 @@ export class ServiceFormComponent implements OnInit {
   }
 
   loadService(id: string): void {
+    this.isLoading = true;
     this.servicesService.getService(id).subscribe({
-      next: (service) => this.serviceForm.patchValue(service),
-      error: (error) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load service' })
+      next: (service) => {
+        this.serviceForm.patchValue(service);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load service' });
+        this.isLoading = false;
+      }
     });
   }
 
   onSubmit(): void {
     if (this.serviceForm.valid) {
+      this.isLoading = true;
       const service: Service = this.serviceForm.value;
       if (this.isEditMode) {
         const id = this.route.snapshot.paramMap.get('id')!;
@@ -83,7 +92,10 @@ export class ServiceFormComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Service updated successfully' });
             this.router.navigate(['/services']);
           },
-          error: (error) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update service' })
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update service' });
+            this.isLoading = false;
+          }
         });
       } else {
         this.servicesService.createService(service).subscribe({
@@ -91,9 +103,14 @@ export class ServiceFormComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Service created successfully' });
             this.router.navigate(['/services']);
           },
-          error: (error) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create service' })
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create service' });
+            this.isLoading = false;
+          }
         });
       }
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields correctly' });
     }
   }
 }
