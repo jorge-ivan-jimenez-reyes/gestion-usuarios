@@ -1,27 +1,46 @@
-# Frontend
+# Frontend Application
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
+This is the frontend application for the user management system.
 
-## Development server
+## Prerequisites
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js (v14 or later)
+- npm (v6 or later)
 
-## Code scaffolding
+## Getting Started
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Navigate to the frontend directory:
+   ```
+   cd Client/frontend
+   ```
 
-## Build
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+3. Start the development server:
+   ```
+   ng serve
+   ```
 
-## Running unit tests
+4. Open your browser and navigate to `http://localhost:4200`. You should see the login page.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Testing the Login Functionality
 
-## Running end-to-end tests
+1. Ensure that the backend server is running on `http://localhost:3000`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+2. On the login page, enter a valid email and password for a user that exists in your backend database.
 
-## Further help
+3. Click the "Login" button.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+4. If the login is successful, you should be redirected to the home page (which we haven't implemented yet, so you might see a blank page or a "page not found" error).
+
+5. If the login fails, you should see an error message displayed on the login page.
+
+## Next Steps
+
+- Implement a home page or dashboard to redirect to after successful login
+- Add user registration functionality
+- Implement logout functionality
+- Create protected routes that require authentication

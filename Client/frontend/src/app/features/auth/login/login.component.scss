@@ -1,63 +1,66 @@
 .login-container {
-  max-width: 300px;
-  margin: 50px auto;
-  padding: 20px;
-  border-radius: 5px;
-  background-color: #ffffff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f4f8;
 
-  h2 {
-    text-align: center;
-    color: #0056b3;
-    margin-bottom: 20px;
-  }
+  ::ng-deep {
+    .p-card {
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-  .form-group {
-    margin-bottom: 15px;
+      .p-card-header {
+        background-color: #1A4C7B;
+        color: #ffffff;
+        padding: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
 
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #0056b3;
-    }
+      .p-card-content {
+        padding: 2rem;
+      }
 
-    input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #0056b3;
-      border-radius: 4px;
-      &:focus {
-        outline: none;
-        border-color: #003d82;
-        box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
+      .p-field {
+        margin-bottom: 1.5rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          color: #1A4C7B;
+          font-weight: bold;
+        }
+
+        input {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          transition: border-color 0.3s, box-shadow 0.3s;
+
+          &:focus {
+            outline: none;
+            border-color: #1A4C7B;
+            box-shadow: 0 0 0 2px rgba(26, 76, 123, 0.2);
+          }
+        }
+      }
+
+      .p-button-primary {
+        background-color: #1A4C7B;
+        border-color: #1A4C7B;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #336b9c;
+          border-color: #336b9c;
+        }
+      }
+
+      .p-messages {
+        margin-top: 1rem;
       }
     }
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #0056b3;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #003d82;
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
-    }
-  }
-
-  .error-message {
-    color: #dc3545;
-    text-align: center;
-    margin-top: 10px;
-    font-size: 0.9em;
   }
 }
