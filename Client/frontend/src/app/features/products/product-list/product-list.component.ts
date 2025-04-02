@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Product } from '../models/product.model';
 import { ProductService } from '../../../services/product.service';
 import { AuthService } from '../../../services/auth.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-product-list',
@@ -45,7 +46,8 @@ export class ProductListComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -88,6 +90,7 @@ export class ProductListComponent implements OnInit {
         this.totalRecords = 0;
         this.totalPages = 1;
         this.isLoading = false;
+        this.toastService.showToast('Error fetching products: ' + error.message, 'error');
       }
     });
   }
@@ -105,14 +108,44 @@ export class ProductListComponent implements OnInit {
   deleteProduct(product: Product): void {
     if (confirm(`Are you sure you want to delete ${product.name}?`)) {
       this.productService.deleteProduct(product.id).subscribe({
-        next: () => {
+        next: (response) => {
           this.loadProducts();
+          this.toastService.showToast(response.message || 'Product deleted successfully', 'success');
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting product', error);
+          let errorMessage = 'An error occurred while deleting the product.';
+          if (error instanceof Error) {
+            errorMessage = error.message;
+          } else if (error.error) {
+            if (typeof error.error === 'string') {
+              errorMessage = error.error;
+            } else if (error.error.error) {
+              errorMessage = error.error.error;
+            } else if (error.error.errors && error.error.errors.length > 0) {
+              errorMessage = error.error.errors[0].msg;
+            }
+          }
+          this.toastService.showToast(`Error deleting product: ${errorMessage}`, 'error');
         }
       });
     }
+  }
+
+  updateProduct(product: Product): void {
+    this.productService.updateProduct(product.id, product).subscribe({
+      next: (updatedProduct) => {
+        const index = this.products.findIndex(p => p.id === updatedProduct.id);
+        if (index !== -1) {
+          this.products[index] = updatedProduct;
+        }
+        this.toastService.showToast('Product updated successfully', 'success');
+      },
+      error: (error) => {
+        console.error('Error updating product', error);
+        this.toastService.showToast('Error updating product: ' + error.message, 'error');
+      }
+    });
   }
 
   loadPreviousPage(): void {
@@ -140,9 +173,11 @@ export class ProductListComponent implements OnInit {
         next: (response) => {
           console.log('Bulk insert successful', response);
           this.loadProducts();
+          this.toastService.showToast('Bulk insert successful', 'success');
         },
         error: (error) => {
           console.error('Error during bulk insert', error);
+          this.toastService.showToast('Error during bulk insert: ' + error.message, 'error');
         }
       });
     }

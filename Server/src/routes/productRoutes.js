@@ -138,7 +138,7 @@ router.put(
  *       404:
  *         description: Product not found
  */
-router.delete('/:id', param('id').isMongoId().withMessage('Invalid product ID'), productController.deleteProduct);
+router.delete('/:id', productController.deleteProduct);
 
 /**
  * @swagger
