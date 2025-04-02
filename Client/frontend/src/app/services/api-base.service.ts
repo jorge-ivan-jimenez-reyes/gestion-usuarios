@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,12 @@ import { Observable } from 'rxjs';
 export class ApiBaseService {
   private baseUrl = 'http://localhost:3000/api'; // Adjust this to match your backend URL
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
 
   protected get<T>(endpoint: string, params?: any): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
@@ -18,21 +24,21 @@ export class ApiBaseService {
         httpParams = httpParams.set(key, params[key]);
       });
     }
-    return this.http.get<T>(url, { params: httpParams });
+    return this.http.get<T>(url, { params: httpParams, headers: this.getHeaders() });
   }
 
   protected post<T>(endpoint: string, data: any): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    return this.http.post<T>(url, data);
+    return this.http.post<T>(url, data, { headers: this.getHeaders() });
   }
 
   protected put<T>(endpoint: string, data: any): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    return this.http.put<T>(url, data);
+    return this.http.put<T>(url, data, { headers: this.getHeaders() });
   }
 
   protected delete<T>(endpoint: string): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    return this.http.delete<T>(url);
+    return this.http.delete<T>(url, { headers: this.getHeaders() });
   }
 }

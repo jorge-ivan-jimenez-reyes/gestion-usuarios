@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 
 interface LoginResponse {
   token: string;
-  // Add any other properties that your backend returns
+  expiresIn: number; // Add this field to store token expiration time
 }
 
 interface RegisterResponse {
   message: string;
-  // Add any other properties that your backend returns
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/users'; // Adjust this to match your backend URL
+  private apiUrl = 'http://localhost:3000/api/users';
 
   constructor(private http: HttpClient) { }
 
@@ -25,8 +24,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap(response => {
-          // Store the token in localStorage
           localStorage.setItem('token', response.token);
+          localStorage.setItem('tokenExpiration', (Date.now() + response.expiresIn * 1000).toString());
         })
       );
   }
@@ -36,8 +35,8 @@ export class AuthService {
   }
 
   logout(): void {
-    // Remove the token from localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiration');
   }
 
   getToken(): string | null {
@@ -45,13 +44,18 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!this.getToken() && !this.isTokenExpired();
   }
 
   isAuthenticated(): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      observer.next(this.isLoggedIn());
-      observer.complete();
-    });
+    return of(this.isLoggedIn());
+  }
+
+  private isTokenExpired(): boolean {
+    const expiration = localStorage.getItem('tokenExpiration');
+    if (!expiration) {
+      return true;
+    }
+    return Date.now() > parseInt(expiration, 10);
   }
 }
