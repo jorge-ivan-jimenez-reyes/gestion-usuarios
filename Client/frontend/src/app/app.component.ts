@@ -1,37 +1,28 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink } from '@angular/router';
-import { MenubarModule } from 'primeng/menubar';
-import { MenuItem } from 'primeng/api';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, MenubarModule],
+  imports: [CommonModule, RouterOutlet, RouterLink, ButtonModule, ToastModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  items: MenuItem[];
+  sidebarVisible = false;
 
-  constructor(private authService: AuthService) {
-    this.items = [
-      {
-        label: 'Products',
-        icon: 'pi pi-fw pi-box',
-        routerLink: '/products'
-      },
-      {
-        label: 'Logout',
-        icon: 'pi pi-fw pi-sign-out',
-        command: () => this.logout()
-      }
-    ];
+  constructor(private authService: AuthService, private router: Router) {}
+
+  toggleSidebar() {
+    this.sidebarVisible = !this.sidebarVisible;
   }
 
   logout() {
     this.authService.logout();
-    // Add navigation to login page if needed
+    this.router.navigate(['/login']);
   }
 }
