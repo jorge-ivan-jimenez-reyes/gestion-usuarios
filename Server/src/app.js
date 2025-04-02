@@ -26,7 +26,7 @@ class App {
   }
 
   setupSwagger() {
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+    this.app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
   }
 
   validationMiddleware(req, res, next) {
