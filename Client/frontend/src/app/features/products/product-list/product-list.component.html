@@ -22,7 +22,6 @@
           <th scope="col">Name</th>
           <th scope="col">Description</th>
           <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -31,7 +30,6 @@
           <td>{{product?.name}}</td>
           <td>{{product?.description}}</td>
           <td>{{product?.price | currency}}</td>
-          <td>{{product?.quantity}}</td>
           <td>
             <button [routerLink]="['/products', product?.id]" aria-label="View product">View</button>
             <button [routerLink]="['/products', product?.id, 'edit']" aria-label="Edit product">Edit</button>

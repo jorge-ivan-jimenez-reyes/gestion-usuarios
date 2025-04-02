@@ -59,15 +59,34 @@ export class ProductListComponent implements OnInit {
       searchTerm: this.searchTerm,
       ...this.filterOptions
     };
+    console.log('Fetching products with params:', params);
     this.productService.getProducts(params).subscribe({
       next: (response: any) => {
-        this.products = response.items;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = Math.ceil(this.totalRecords / this.ITEMS_PER_PAGE);
+        console.log('Products received:', response);
+        if (Array.isArray(response)) {
+          this.products = response;
+          this.totalRecords = response.length;
+          this.totalPages = 1; // Assuming all products are returned in a single page
+          console.log(`Loaded ${this.products.length} products. Total records: ${this.totalRecords}, Total pages: ${this.totalPages}`);
+        } else if (response && response.items) {
+          // Keep the existing logic for paginated response
+          this.products = response.items;
+          this.totalRecords = response.totalRecords || 0;
+          this.totalPages = Math.ceil(this.totalRecords / this.ITEMS_PER_PAGE);
+          console.log(`Loaded ${this.products.length} products. Total records: ${this.totalRecords}, Total pages: ${this.totalPages}`);
+        } else {
+          console.error('Unexpected response format:', response);
+          this.products = [];
+          this.totalRecords = 0;
+          this.totalPages = 1;
+        }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching products', error);
+        this.products = [];
+        this.totalRecords = 0;
+        this.totalPages = 1;
         this.isLoading = false;
       }
     });
